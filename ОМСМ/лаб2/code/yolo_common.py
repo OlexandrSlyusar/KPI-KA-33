@@ -1,11 +1,3 @@
-"""Спільні функції лабораторної 2 (детекція YOLO, VisDrone).
-
-Використовуються і основним скриптом ОМСМ_лаба2.py, і run_inference.py:
-- єдиний (однаковий для всіх фреймворків) інференс: letterbox -> forward -> NMS;
-- завантаження моделей YOLOv8 (Ultralytics), YOLOv5 та YOLOv7 (офіційні репозиторії);
-- читання/запис зображень за шляхами з кирилицею (Windows);
-- малювання боксів.
-"""
 import os
 import sys
 import time
@@ -17,10 +9,8 @@ import torch
 import torchvision
 
 CLASSES = ["pedestrian", "person", "car", "bus", "truck"]
-COLORS = [(56, 56, 255), (151, 157, 255), (31, 112, 255), (29, 178, 255), (49, 210, 207)]  # BGR
+COLORS = [(56, 56, 255), (151, 157, 255), (31, 112, 255), (29, 178, 255), (49, 210, 207)]
 
-# Робочий каталог для даних, сторонніх репозиторіїв і запусків навчання.
-# Тільки ASCII-шлях: OpenCV і YOLOv7 на Windows не відкривають файли за шляхами з кирилицею.
 WORK_ROOT = Path(os.environ.get("LAB2_WORK_ROOT", Path.home() / "omsm_lab2"))
 if not str(WORK_ROOT).isascii():
     WORK_ROOT = Path("C:/omsm_lab2") if os.name == "nt" else Path("/tmp/omsm_lab2")
@@ -28,16 +18,14 @@ REPOS_DIR = WORK_ROOT / "third_party"
 WEIGHTS_DIR = WORK_ROOT / "weights"
 RUNS_DIR = WORK_ROOT / "runs"
 
-# Офіційні репозиторії, зафіксовані на конкретних комітах (відтворюваність).
 REPOS = {
     "yolov5": ("ultralytics/yolov5", "af08ba156fd58ed5b0fe7e4e58a22c72c3cdd0ce"),
     "yolov7": ("WongKinYiu/yolov7", "a207844b1ce82d204ab36d87d496728d3d2348e7"),
 }
 
 
-# ---------- зображення ----------
+#1. Зображення
 def imread(path):
-    """cv2.imread, що працює з не-ASCII шляхами (Windows)."""
     data = np.fromfile(str(path), dtype=np.uint8)
     return cv2.imdecode(data, cv2.IMREAD_COLOR)
 
@@ -52,7 +40,6 @@ def imwrite(path, img, quality=95):
 
 
 def letterbox(img, size, color=114):
-    """Масштабування зі збереженням пропорцій + доповнення до квадрата size x size."""
     h, w = img.shape[:2]
     r = min(size / h, size / w)
     nh, nw = round(h * r), round(w * r)
@@ -65,20 +52,18 @@ def letterbox(img, size, color=114):
 
 
 def to_tensor(imgs_bgr, device):
-    x = np.stack([im[:, :, ::-1].transpose(2, 0, 1) for im in imgs_bgr])  # BGR->RGB, HWC->CHW
+    x = np.stack([im[:, :, ::-1].transpose(2, 0, 1) for im in imgs_bgr])
     return torch.from_numpy(np.ascontiguousarray(x)).to(device).float().div_(255)
 
 
-# ---------- моделі ----------
+#2. Моделі
 def _purge_repo_modules():
-    """YOLOv5 і YOLOv7 мають однакові імена пакетів (models, utils) - очищаємо кеш імпорту."""
     for name in list(sys.modules):
         if name in ("models", "utils") or name.startswith(("models.", "utils.")):
             del sys.modules[name]
 
 
 class Detector:
-    """Обгортка над моделлю будь-якого з трьох фреймворків з однаковим інтерфейсом."""
 
     def __init__(self, framework, weights, device="cpu"):
         self.framework, self.weights, self.device = framework, Path(weights), torch.device(device)
@@ -96,7 +81,7 @@ class Detector:
                 if framework == "yolov5":
                     net = attempt_load(str(weights), device=torch.device("cpu"), fuse=True)
                 else:
-                    net = attempt_load(str(weights), map_location=torch.device("cpu"))  # fuse всередині
+                    net = attempt_load(str(weights), map_location=torch.device("cpu"))
             finally:
                 sys.path.remove(repo)
                 _purge_repo_modules()
@@ -105,7 +90,7 @@ class Detector:
         self.net = net.float().eval().to(self.device)
         self._reset_grids()
         for p in self.net.parameters():
-            if p.is_leaf:  # після fuse() у YOLOv7 частина тензорів не є листами графа
+            if p.is_leaf:
                 p.requires_grad_(False)
 
     def to(self, device):
@@ -115,8 +100,6 @@ class Detector:
         return self
 
     def _reset_grids(self):
-        """YOLOv5/YOLOv7 кешують сітки голови у звичайних списках (не буферах) - після зміни пристрою
-        скидаємо їх, щоб голова перебудувала сітки на новому пристрої."""
         m = self.detect_layer
         for attr in ("grid", "anchor_grid"):
             g = getattr(m, attr, None)
@@ -132,15 +115,13 @@ class Detector:
         return out[0] if isinstance(out, (list, tuple)) else out
 
     def decode(self, out):
-        """-> (boxes_xywh [B,A,4], scores [B,A,nc]) у пікселях входу мережі."""
-        if self.framework == "ultralytics":  # [B, 4+nc, A], без objectness
+        if self.framework == "ultralytics":
             out = out.transpose(1, 2)
             return out[..., :4], out[..., 4:]
-        return out[..., :4], out[..., 5:] * out[..., 4:5]  # YOLOv5/v7: obj * cls
+        return out[..., :4], out[..., 5:] * out[..., 4:5]
 
     @torch.no_grad()
     def predict(self, imgs_bgr, size=640, conf=0.001, iou=0.6, max_det=1000, return_time=False):
-        """Пакетний інференс; повертає список масивів [N, 6] = x1, y1, x2, y2, score, cls у пікселях оригіналу."""
         t0 = time.perf_counter()
         boxed = [letterbox(im, size) for im in imgs_bgr]
         x = to_tensor([b[0] for b in boxed], self.device)
@@ -164,6 +145,7 @@ class Detector:
         return results
 
 
+#3. NMS, SAHI, візуалізація
 def xywh2xyxy(b):
     out = b.clone()
     out[:, 0] = b[:, 0] - b[:, 2] / 2
@@ -174,7 +156,6 @@ def xywh2xyxy(b):
 
 
 def nms(xywh, scores, conf=0.001, iou=0.6, max_det=1000, max_candidates=30000):
-    """Multi-label NMS (як у валідаторах YOLO): кожна пара (бокс, клас) зі score > conf - кандидат."""
     i, j = (scores > conf).nonzero(as_tuple=True)
     s = scores[i, j]
     if s.numel() > max_candidates:
@@ -186,7 +167,6 @@ def nms(xywh, scores, conf=0.001, iou=0.6, max_det=1000, max_candidates=30000):
 
 
 def merge_nms(dets, iou=0.6, max_det=1000):
-    """Об'єднання детекцій з кількох проходів (тайли SAHI + повне зображення)."""
     dets = [d for d in dets if len(d)]
     if not dets:
         return np.zeros((0, 6), dtype=np.float32)
@@ -196,7 +176,6 @@ def merge_nms(dets, iou=0.6, max_det=1000):
 
 
 def predict_sliced(det, img, size=640, overlap=0.2, conf=0.001, iou=0.6, max_det=1000):
-    """SAHI (Slicing Aided Hyper Inference): тайли size x size з перекриттям + повне зображення."""
     h, w = img.shape[:2]
     step = int(size * (1 - overlap))
     xs = list(range(0, max(w - size, 0) + 1, step)) or [0]
@@ -217,7 +196,7 @@ def predict_sliced(det, img, size=640, overlap=0.2, conf=0.001, iou=0.6, max_det
             d[:, [0, 2]] += x0
             d[:, [1, 3]] += y0
             outs.append(d)
-    outs.append(det.predict([img], size, conf, iou, max_det)[0])  # повний кадр для великих об'єктів
+    outs.append(det.predict([img], size, conf, iou, max_det)[0])
     return merge_nms(outs, iou, max_det)
 
 

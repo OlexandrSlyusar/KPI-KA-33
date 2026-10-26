@@ -1,12 +1,3 @@
-"""Лабораторна робота 2. Детекція об'єктів з YOLO. Варіант 13 - VisDrone.
-
-Класи: pedestrian / person / car / bus / truck. Обов'язкове порівняння: yolov8n vs yolov5s
-(+ третя модель yolov7-tiny за бажанням), фокус - дрібні об'єкти.
-
-Запуск у Visual Studio: Start (F5) або з терміналу:  python ОМСМ_лаба2.py
-Скрипт можна переривати й запускати знову: готові етапи (дані, навчені моделі, оцінки)
-пропускаються, перерване навчання продовжується з last.pt.
-"""
 #1. Налаштування
 import contextlib
 import io
@@ -38,46 +29,42 @@ from yolo_common import (CLASSES, REPOS, REPOS_DIR, RUNS_DIR, WEIGHTS_DIR, WORK_
                          imwrite, letterbox, predict_sliced, to_tensor)
 
 warnings.filterwarnings("ignore")
-os.environ.setdefault("YOLO_AUTOINSTALL", "false")  # фреймворки не повинні самі змінювати пакети (torch ROCm)
+os.environ.setdefault("YOLO_AUTOINSTALL", "false")
 
-SMOKE = os.environ.get("LAB2_SMOKE") == "1"  # швидка перевірка працездатності всього конвеєра
+SMOKE = os.environ.get("LAB2_SMOKE") == "1"
 
 SEED = 0
-IMG_SIZE = 640                 # однаковий imgsz для всіх моделей (вимога методички)
+IMG_SIZE = 640
 BATCH_SIZE = 16
-EPOCHS = 20                    # >= 10 епох (мінімальна вимога)
-PATIENCE = 10                  # рання зупинка (YOLOv8, YOLOv5)
-TRAIN_FRACTION = 1.0           # частка train, однакова для всіх моделей (на CPU можна зменшити)
-FREEZE_EPOCHS = 5              # бонус: заморожений backbone -> розморожування
-TUNE_LR0 = [0.005, 0.01, 0.02] # бонус: легке тюнінгування lr0 (короткі запуски)
+EPOCHS = 20
+PATIENCE = 10
+TRAIN_FRACTION = 1.0
+FREEZE_EPOCHS = 5
+TUNE_LR0 = [0.005, 0.01, 0.02]
 TUNE_EPOCHS = 5
-BONUS_FRACTION = 0.3           # бонусні абляції YOLOv8n - на однаковій 30% підвибірці train (власний базовий запуск)
+BONUS_FRACTION = 0.3
 NMS_IOU_GRID = [0.45, 0.5, 0.6, 0.7]
 CONF_GRID = [0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5]
-EVAL_CONF, EVAL_IOU, MAX_DET = 0.001, 0.6, 1000   # однакові параметри оцінки для всіх моделей
-DEPLOY_CONF = 0.25             # поріг для візуалізацій / confusion matrix / FP-FN
+EVAL_CONF, EVAL_IOU, MAX_DET = 0.001, 0.6, 1000
+DEPLOY_CONF = 0.25
 SAHI_MODELS = ["yolov8n", "yolov5s"]
 SAHI_TILE, SAHI_OVERLAP = 640, 0.2
-HIGH_RES = 960                 # бонус: інференс при більшій роздільній здатності (дрібні об'єкти)
-RUN_THIRD_MODEL = True         # yolov7-tiny з офіційного репозиторію
+HIGH_RES = 960
+RUN_THIRD_MODEL = True
 RUN_BONUS = True
-SHOW_PLOTS = False             # True - показувати вікна matplotlib (блокує виконання до закриття вікна)
+SHOW_PLOTS = False
 if not SHOW_PLOTS:
     plt.switch_backend("Agg")
 WORKERS = min(8, os.cpu_count() or 1)
 
-DEVICE = "0" if torch.cuda.is_available() else "cpu"           # ROCm-збірка PyTorch теж дає torch.cuda
+DEVICE = "0" if torch.cuda.is_available() else "cpu"
 TORCH_DEVICE = torch.device("cuda:0" if DEVICE == "0" else "cpu")
 
-# Профіль під обладнання: на CPU навчання YOLO на всьому VisDrone триває десятки годин, тому
-# зберігаємо мінімум методички (10 епох), але навчаємо всі моделі на однаковій випадковій 30% підвибірці train.
-# Val і test-dev використовуються повністю. Значення можна змінити вручну.
-PROFILE = os.environ.get("LAB2_PROFILE", "auto")   # auto | gpu | cpu
+PROFILE = os.environ.get("LAB2_PROFILE", "auto")
 if PROFILE == "cpu" or (PROFILE == "auto" and DEVICE == "cpu"):
     EPOCHS, TRAIN_FRACTION, FREEZE_EPOCHS, BONUS_FRACTION = 10, 0.3, 3, 0.15
-EPOCHS = int(os.environ.get("LAB2_EPOCHS", EPOCHS))
 
-EPOCHS = int(os.environ.get("LAB2_EPOCHS", EPOCHS))                  # ручне перевизначення
+EPOCHS = int(os.environ.get("LAB2_EPOCHS", EPOCHS))
 TRAIN_FRACTION = float(os.environ.get("LAB2_FRACTION", TRAIN_FRACTION))
 BATCH_SIZE = int(os.environ.get("LAB2_BATCH", BATCH_SIZE))
 
@@ -99,8 +86,6 @@ if SMOKE:
     OUT_DIR = PROJECT_DIR / "outputs_smoke"
 CACHE_DIR = OUT_DIR / "eval_cache"
 
-# VisDrone: 0 ignored regions, 1 pedestrian, 2 people, 3 bicycle, 4 car, 5 van, 6 truck, 7 tricycle,
-# 8 awning-tricycle, 9 bus, 10 motor, 11 others.  Варіант 13: pedestrian / person(=people) / car / bus / truck.
 VISDRONE_TO_OURS = {1: 0, 2: 1, 4: 2, 9: 3, 6: 4}
 SPLITS = {"train": "VisDrone2019-DET-train", "val": "VisDrone2019-DET-val", "test": "VisDrone2019-DET-test-dev"}
 VISDRONE_URL = "https://github.com/ultralytics/assets/releases/download/v0.0.0/{}.zip"
@@ -111,7 +96,6 @@ WEIGHT_URLS = {
 }
 SIZE_NAMES = ["small (<32²)", "medium (32²–96²)", "large (>96²)"]
 
-# Однакова схема навчання й аугментацій для всіх моделей (значення YOLOv5 hyp.scratch-low = default YOLOv8)
 HYP = dict(lr0=0.01, lrf=0.01, momentum=0.937, weight_decay=0.0005, warmup_epochs=3.0, warmup_momentum=0.8,
            warmup_bias_lr=0.1, hsv_h=0.015, hsv_s=0.7, hsv_v=0.4, degrees=0.0, translate=0.1, scale=0.5,
            shear=0.0, perspective=0.0, flipud=0.0, fliplr=0.5, mosaic=1.0, mixup=0.0)
@@ -176,7 +160,7 @@ def save_versions():
     return info
 
 
-#2. Дані: VisDrone2019-DET -> формат YOLO (5 класів), сплити train / val / test-dev
+#2. Дані (VisDrone2019-DET -> формат YOLO)
 def parse_annotations(path):
     rows = []
     for line in Path(path).read_text().splitlines():
@@ -187,7 +171,6 @@ def parse_annotations(path):
 
 
 def convert_image(args):
-    """Зафарбовує ignored regions (сірий 114) і пише YOLO-мітки. Повертає статистику об'єктів."""
     img_path, ann_path, out_img, out_lbl = args
     ann = parse_annotations(ann_path)
     with Image.open(img_path) as im:
@@ -218,7 +201,7 @@ def prepare_data():
     marker = DATA_DIR / ".prepared.json"
     if marker.exists():
         info = json.loads(marker.read_text(encoding="utf-8"))
-        if info.get("train_fraction") != TRAIN_FRACTION or info.get("bonus_fraction") != BONUS_FRACTION:  # змінили частку train - перебудовуємо лише список
+        if info.get("train_fraction") != TRAIN_FRACTION or info.get("bonus_fraction") != BONUS_FRACTION:
             all_train = sorted(str(p) for p in (DATA_DIR / "images" / "train").glob("*.jpg"))
             write_train_list(all_train, info)
             marker.write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -233,7 +216,7 @@ def prepare_data():
             with zipfile.ZipFile(zip_path) as zf:
                 zf.extractall(RAW_DIR)
         images = sorted((src / "images").glob("*.jpg"))
-        if SMOKE:  # маленька підвибірка лише для перевірки коду
+        if SMOKE:
             images = rng.sample(images, {"train": 48, "val": 16, "test": 24}[split])
         (DATA_DIR / "images" / split).mkdir(parents=True, exist_ok=True)
         (DATA_DIR / "labels" / split).mkdir(parents=True, exist_ok=True)
@@ -270,7 +253,6 @@ def prepare_data():
 
 
 def write_train_list(all_train, info):
-    """Список train (однаковий для всіх фреймворків); при TRAIN_FRACTION < 1 - випадкова підвибірка з SEED."""
     files = sorted(all_train)
     if TRAIN_FRACTION < 1:
         files = sorted(random.Random(SEED).sample(files, max(1, round(len(files) * TRAIN_FRACTION))))
@@ -308,7 +290,7 @@ def report_data(info):
     finish_fig(fig, "dataset_stats.png")
 
 
-#3. Моделі та сторонні репозиторії (офіційні YOLOv5 і YOLOv7, зафіксовані коміти)
+#3. Моделі та репозиторії YOLOv5 / YOLOv7
 def ensure_repo(name):
     dest = REPOS_DIR / name
     owner_repo, sha = REPOS[name]
@@ -337,13 +319,10 @@ def ensure_repo(name):
 
 
 def patch_repo(name, dest):
-    """Сумісність коду YOLOv7 (2022 р.) з NumPy 2.x; ідемпотентно, логіку моделі не змінює."""
     if name != "yolov7":
         return
     fixes = {"utils/datasets.py": [(".astype(np.int)", ".astype(int)")],
              "utils/metrics.py": [("np.trapz(", "(np.trapezoid if hasattr(np, 'trapezoid') else np.trapz)(")],
-             # AMD ROCm (Windows): cudnn.benchmark запускає вичерпний пошук ядер MIOpen, який зависає
-             # з помилкою EvaluateInvokers; вимикаємо лише бенчмарк (на результати навчання не впливає).
              "utils/torch_utils.py": [("cudnn.benchmark, cudnn.deterministic = True, False",
                                        "cudnn.benchmark, cudnn.deterministic = False, False")]}
     for rel, pairs in fixes.items():
@@ -414,8 +393,6 @@ def repo_env():
     env = dict(os.environ, PYTHONUTF8="1", PYTHONIOENCODING="utf-8", TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD="1",
                WANDB_MODE="disabled", WANDB_DISABLED="true", GIT_PYTHON_REFRESH="quiet",
                YOLO_AUTOINSTALL="false")
-    # AMD ROCm: YOLOv7 вмикає cudnn.benchmark, і MIOpen починає вичерпний пошук ядер для кожної згортки
-    # (на Windows він зависає з помилкою EvaluateInvokers). FAST - готові евристики без бенчмарку.
     env.setdefault("MIOPEN_FIND_MODE", "FAST")
     return env
 
@@ -430,7 +407,6 @@ def write_hyp(run_id, base_file, overrides):
 
 
 def clear_label_caches():
-    """У трьох фреймворків різні формати *.cache з однаковою назвою - видаляємо перед запуском."""
     for p in (DATA_DIR / "labels").glob("*.cache"):
         p.unlink()
     for p in DATA_DIR.glob("*.cache"):
@@ -459,7 +435,6 @@ def train_yolov7(run_id, run, epochs):
     if last.exists():
         cmd = [sys.executable, "train.py", "--resume", str(last)]
     else:
-        # Ті самі аугментації, що й у YOLOv5/YOLOv8 (вимикаємо mixup/paste_in, яких немає в інших моделях)
         hyp = write_hyp(run_id, repo / "data" / "hyp.scratch.tiny.yaml",
                         dict(HYP, mixup=0.0, copy_paste=0.0, paste_in=0.0))
         cmd = [sys.executable, "train.py", "--weights", str(weights("yolov7-tiny.pt")),
@@ -488,7 +463,7 @@ BONUS_RUNS = [
     dict(id="yolov8n_freeze", label="YOLOv8n (freeze → unfreeze)", framework="ultralytics", weights="yolov8n.pt",
          two_stage=True),
 ]
-for _r in BONUS_RUNS:  # абляції - на однаковій підвибірці train
+for _r in BONUS_RUNS:
     _r["data"] = BONUS_YAML
 
 
@@ -499,7 +474,7 @@ def train_run(run):
         return done_info(run_id)
     print(f"\n===== Навчання {run['label']} ({run_id}) | device={DEVICE} | epochs={run.get('epochs', EPOCHS)} =====")
     set_seed(SEED)
-    if run.get("two_stage"):  # бонус: спершу заморожений backbone (10 шарів YOLOv8), потім донавчання всієї мережі
+    if run.get("two_stage"):
         s1 = dict(run, id=f"{run_id}_stage1", label=run["label"] + " stage1")
         if not is_done(s1["id"]):
             t = timed(s1["id"], lambda: train_ultralytics(s1["id"], s1, FREEZE_EPOCHS, weights(run["weights"]), dict(freeze=10)))
@@ -521,7 +496,6 @@ def train_run(run):
 
 
 def read_history(run_id, framework):
-    """Уніфіковані криві: train/val box loss, val mAP@0.5, val mAP@0.5:0.95 по епохах."""
     d = run_dir(run_id)
     if framework == "yolov7":
         rows = []
@@ -552,10 +526,8 @@ def history_of(run):
     return read_history(run["id"], run["framework"])
 
 
-#5. Оцінка (однаковий оцінювач COCOeval для всіх моделей)
+#5. Оцінка
 def coco_backend():
-    """faster-coco-eval - C++-реалізація COCOeval з ідентичними результатами. Еталонний pycocotools
-    рахує зіставлення в циклі Python і на VisDrone (сотні об'єктів і до 1000 детекцій на кадр) працює годинами."""
     try:
         from faster_coco_eval import COCO, COCOeval_faster as COCOeval
     except ImportError:
@@ -603,15 +575,15 @@ def coco_metrics(coco, preds):
             for i, p in enumerate(preds) if len(p)]
     if not rows:
         return dict(map=0, map50=0, map75=0, ap_s=0, ap_m=0, ap_l=0, ar=0, ar_s=0, per_class={}, pr={})
-    dets = np.concatenate(rows).astype(np.float64)  # [image_id, x, y, w, h, score, class]
+    dets = np.concatenate(rows).astype(np.float64)
     with contextlib.redirect_stdout(io.StringIO()):
         dt = coco.loadRes(dets)
         ev = COCOeval(coco, dt, "bbox")
-        ev.params.maxDets = [1, 100, MAX_DET]   # VisDrone: сотні об'єктів на кадр
+        ev.params.maxDets = [1, 100, MAX_DET]
         ev.evaluate()
         ev.accumulate()
-    prec = ev.eval["precision"]  # [T, R, K, A, M]; A: all, small, medium, large; M: maxDets
-    rec = ev.eval["recall"]      # [T, K, A, M]
+    prec = ev.eval["precision"]
+    rec = ev.eval["recall"]
 
     def mean_valid(x):
         x = np.asarray(x)
@@ -631,7 +603,6 @@ def coco_metrics(coco, preds):
 
 
 def match_counts(coco, preds, conf=DEPLOY_CONF, iou_thr=0.5):
-    """Confusion matrix (nc+1)x(nc+1) з фоном, як у валідаторах YOLO: рядки - істина, стовпці - передбачення."""
     nc = len(CLASSES)
     cm = np.zeros((nc + 1, nc + 1), dtype=np.int64)
     for i, p in enumerate(preds):
@@ -679,11 +650,10 @@ def model_complexity(det):
     with FlopCounterMode(display=False) as counter, torch.no_grad():
         det.raw(torch.zeros(1, 3, IMG_SIZE, IMG_SIZE))
     det.to(dev)
-    return params, counter.get_total_flops() / 1e9  # GFLOPs (1 MAC = 2 FLOPs, як у звітах YOLO)
+    return params, counter.get_total_flops() / 1e9
 
 
 def measure_speed(det, device, imgs, size=IMG_SIZE, warmup=5, runs=50):
-    """Медіанна latency (мс) forward-проходу та повного конвеєра (препроцесинг + forward + NMS), batch=1."""
     det.to(device)
     for im in imgs[:warmup]:
         det.predict([im], size, DEPLOY_CONF, 0.6)
@@ -725,8 +695,6 @@ def evaluate_run(run, info, coco_test, test_files, coco_val, val_files, speed_im
 
 def plot_curves(runs, histories, name, title_suffix=""):
     fig, axes = plt.subplots(2, 2, figsize=(13, 9))
-    # Box loss YOLOv8 (CIoU + DFL) і YOLOv5/v7 (CIoU з іншим коефіцієнтом) мають різний масштаб,
-    # тому для порівняння динаміки loss нормуємо на значення 1-ї епохи.
     panels = [("train_box", "Train box loss (відносно 1-ї епохи)"), ("val_box", "Val box loss (відносно 1-ї епохи)"),
               ("map50", "Val mAP@0.5"), ("map5095", "Val mAP@0.5:0.95")]
     for ax, (col, title) in zip(axes.ravel(), panels):
@@ -774,7 +742,7 @@ def plot_confusion(runs, evals):
     fig, axes = make_grid(len(runs), len(runs), 6.5, 5.5)
     for ax, run in zip(axes, runs):
         cm = np.array(evals[run["id"]]["cm"], dtype=float)
-        norm = cm / np.clip(cm.sum(0, keepdims=True), 1, None)  # нормування по стовпцях (передбаченнях), як в Ultralytics
+        norm = cm / np.clip(cm.sum(0, keepdims=True), 1, None)
         ax.imshow(norm, cmap="Blues", vmin=0, vmax=1)
         for i in range(len(labels)):
             for j in range(len(labels)):
@@ -789,9 +757,8 @@ def plot_confusion(runs, evals):
     finish_fig(fig, "confusion_matrices.png")
 
 
-#6. Бонуси: EigenCAM (аналог Grad-CAM для детекторів), SAHI, роздільна здатність, тюнінг
+#6. Бонуси (EigenCAM, SAHI, тюнінг)
 def eigencam(det, img, size=IMG_SIZE):
-    """EigenCAM: перша головна компонента активацій шару P3 (stride 8), що подає ознаки в голову детекції."""
     layer = det.net.model[det.detect_layer.f[0]]
     store = {}
     hook = layer.register_forward_hook(lambda m, i, o: store.update(a=o))
@@ -805,7 +772,7 @@ def eigencam(det, img, size=IMG_SIZE):
     m = m - m.mean(0)
     _, _, vt = torch.linalg.svd(m, full_matrices=False)
     proj = m @ vt[0]
-    if torch.dot(proj, a.abs().mean(0).flatten()) < 0:  # SVD визначає знак компоненти з точністю до ±1
+    if torch.dot(proj, a.abs().mean(0).flatten()) < 0:
         proj = -proj
     cam = proj.reshape(h, w).clamp(min=0).numpy()
     cam = cv2.resize(cam, (size, size), interpolation=cv2.INTER_LINEAR)
@@ -839,7 +806,6 @@ def plot_eigencam(runs, infos, coco_test, test_files):
 
 
 def tune_lr0():
-    """Бонус: легке тюнінгування lr0 короткими запусками YOLOv8n на частині train; критерій - val mAP@0.5:0.95."""
     rows = []
     for lr in TUNE_LR0:
         run = dict(id=f"tune_lr0_{lr}", label=f"YOLOv8n lr0={lr}", framework="ultralytics", weights="yolov8n.pt",
@@ -854,7 +820,6 @@ def tune_lr0():
 
 
 def tune_nms(run, info, coco_val, val_files):
-    """Бонус: підбір IoU-порогу NMS (за val mAP@0.5:0.95) і порогу впевненості (за val F1)."""
     det = Detector(run["framework"], info["best"], TORCH_DEVICE)
     rows = []
     for iou in NMS_IOU_GRID:
@@ -876,7 +841,7 @@ def tune_nms(run, info, coco_val, val_files):
     return nms_df, conf_df, best_iou, float(conf_df.loc[conf_df["F1"].idxmax(), "conf"])
 
 
-#7. Інференс на власних зображеннях / відео, GIF
+#7. Інференс на власних зображеннях і відео
 def collect_media(folder, exts):
     return sorted(p for p in Path(folder).glob("*") if p.suffix.lower() in exts) if Path(folder).is_dir() else []
 
@@ -886,17 +851,17 @@ def save_gif(frames_bgr, path, fps=2, width=720):
     scaled = [cv2.resize(f, (width, round(f.shape[0] * width / f.shape[1]))) for f in frames_bgr]
     height = max(f.shape[0] for f in scaled)
     frames = []
-    for f in scaled:  # кадри різних пропорцій вирівнюємо до одного розміру (вимога формату GIF)
+    for f in scaled:
         canvas = np.full((height, width, 3), 255, dtype=np.uint8)
         top = (height - f.shape[0]) // 2
         canvas[top:top + f.shape[0]] = f
         frames.append(canvas[:, :, ::-1])
-    imageio.mimsave(path, frames, duration=1000 / fps, loop=0)  # duration у мс (imageio >= 2.28)
+    imageio.mimsave(path, frames, duration=1000 / fps, loop=0)
 
 
 def process_video(det, src, size, max_frames=450):
     cap = cv2.VideoCapture(str(src))
-    if not cap.isOpened():  # кирилиця в шляху - копіюємо у тимчасовий ASCII-файл
+    if not cap.isOpened():
         tmp = WORK_ROOT / f"tmp_video{src.suffix}"
         shutil.copy2(src, tmp)
         cap = cv2.VideoCapture(str(tmp))
@@ -932,17 +897,17 @@ def main():
     print("Робочий каталог (дані, репозиторії, запуски):", WORK_ROOT)
     assert SMOKE or EPOCHS >= 10, "Методичка: не менше 10 епох"
 
-    # 2. Дані
+    #2. Дані
     data_info = prepare_data()
     report_data(data_info)
 
-    # 4. Навчання
+    #4. Навчання
     main_runs = [r for r in MAIN_RUNS if RUN_THIRD_MODEL or not r.get("optional")]
     infos = {}
     for run in main_runs + (BONUS_RUNS if RUN_BONUS else []):
         try:
             infos[run["id"]] = train_run(run)
-        except Exception as e:  # третя (необов'язкова) модель не повинна зупиняти лабораторну
+        except Exception as e:
             if not run.get("optional"):
                 raise
             print(f"[{run['id']}] пропущено через помилку: {e}")
@@ -953,7 +918,7 @@ def main():
     if bonus_runs:
         plot_curves(bonus_runs, histories, "bonus_training_curves.png", " (YOLOv8n, абляції)")
 
-    # 5. Оцінка
+    #5. Оцінка
     coco_test, test_files = build_gt("test")
     coco_val, val_files = build_gt("val")
     speed_imgs = [imread(f) for f in test_files[:20]]
@@ -990,7 +955,7 @@ def main():
     plot_pr(main_runs, evals)
     plot_confusion(main_runs, evals)
 
-    # 6. Бонуси для дрібних об'єктів: більша роздільна здатність інференсу та SAHI
+    #6. Дрібні об'єкти: imgsz 960 і SAHI
     small_rows = []
     for run in main_runs:
         e = evals[run["id"]]
@@ -1037,7 +1002,7 @@ def main():
     if lr_df is not None:
         print("\nТюнінг lr0 (YOLOv8n, короткі запуски):")
         print(lr_df.to_string(index=False))
-    best_id = max([r["id"] for r in main_runs + bonus_runs], key=lambda k: evals[k]["val"]["map"])  # вибір за val, не за test
+    best_id = max([r["id"] for r in main_runs + bonus_runs], key=lambda k: evals[k]["val"]["map"])
     best_run = next(r for r in main_runs + bonus_runs if r["id"] == best_id)
     nms_df, conf_df, best_iou, best_conf = tune_nms(best_run, infos[best_id], coco_val, val_files)
     print(f"\nТюнінг NMS для {best_run['label']} (val):")
@@ -1048,7 +1013,7 @@ def main():
 
     plot_eigencam(main_runs, infos, coco_test, test_files)
 
-    # 7. Збереження найкращої моделі та інференс на власних зображеннях / відео
+    #7. Найкраща модель та інференс
     best_path = OUT_DIR / f"best_model_{best_id}.pt"
     shutil.copy2(infos[best_id]["best"], best_path)
     meta = dict(run_id=best_id, label=best_run["label"], framework=best_run["framework"], weights=best_path.name,
@@ -1092,7 +1057,7 @@ def main():
         n = process_video(det, video, IMG_SIZE)
         print(f"Відео {video.name}: оброблено {n} кадрів -> outputs/video_{video.stem}_detections.mp4/.gif")
 
-    # 8. Висновки
+    #8. Висновки
     lines = []
     pct = lambda v: f"{100 * v:.1f}%"
     t = {k: v["test"] for k, v in evals.items()}

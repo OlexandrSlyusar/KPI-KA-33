@@ -1,5 +1,4 @@
 @echo off
-rem Quick end-to-end check of the whole pipeline on a tiny VisDrone subset (2 epochs)
 chcp 65001 >nul
 cd /d "%~dp0"
 title Lab2 - smoke test

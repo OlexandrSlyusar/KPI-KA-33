@@ -1,5 +1,4 @@
 @echo off
-rem Full lab run: data, training of all models, evaluation, bonuses, inference
 chcp 65001 >nul
 cd /d "%~dp0"
 title Lab2 - full run

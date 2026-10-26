@@ -1,5 +1,4 @@
 @echo off
-rem Lab 2: fast COCO evaluation (faster-coco-eval, same results as pycocotools) + reset of the old evaluation cache
 chcp 65001 >nul
 cd /d "%~dp0"
 title Lab2 - update evaluation

@@ -1,4 +1,3 @@
-"""Перевірка середовища: PyTorch ROCm бачить Radeon і виконує згортку та NMS на GPU."""
 import platform
 import time
 

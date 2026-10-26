@@ -1,5 +1,4 @@
 @echo off
-rem Lab 2 (YOLO, VisDrone): Python venv in ASCII path (MIOpen cannot read Cyrillic paths) + PyTorch for AMD ROCm (Radeon RX 9060 XT = gfx1200)
 chcp 65001 >nul
 cd /d "%~dp0"
 title Lab2 - environment setup
