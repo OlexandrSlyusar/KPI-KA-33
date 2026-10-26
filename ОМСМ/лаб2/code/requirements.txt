@@ -1,0 +1,23 @@
+# Лабораторна 2 (YOLO, VisDrone). Встановлення:  pip install -r requirements.txt
+# PyTorch встановлюється окремо під ваше обладнання (див. README.md):
+#   NVIDIA:  pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+#   CPU:     pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+ultralytics==8.4.189
+pycocotools>=2.0.8
+faster-coco-eval>=1.6
+opencv-python>=4.8
+numpy
+pandas
+matplotlib
+pyyaml
+pillow
+scipy
+seaborn
+tqdm
+psutil
+requests
+thop
+imageio
+tensorboard
+gitpython
+setuptools

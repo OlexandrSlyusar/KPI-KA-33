@@ -1,0 +1,22 @@
+{
+  "python": "3.12.10",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "torch": "2.14.0+rocm10.1.0",
+  "torchvision": "0.29.0a0+rocm10.1.0",
+  "ultralytics": "8.4.189",
+  "numpy": "2.5.3",
+  "opencv": "5.0.0",
+  "pandas": "3.1.0",
+  "device": "AMD Radeon RX 9060 XT",
+  "repos": {
+    "yolov5": "af08ba156fd58ed5b0fe7e4e58a22c72c3cdd0ce",
+    "yolov7": "a207844b1ce82d204ab36d87d496728d3d2348e7"
+  },
+  "seed": 0,
+  "imgsz": 640,
+  "batch": 16,
+  "epochs": 20,
+  "train_fraction": 1.0,
+  "bonus_fraction": 0.3,
+  "smoke": false
+}

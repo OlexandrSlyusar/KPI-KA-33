@@ -1,0 +1,16 @@
+{
+ "run_id": "yolov8n",
+ "label": "YOLOv8n",
+ "framework": "ultralytics",
+ "weights": "best_model_yolov8n.pt",
+ "imgsz": 640,
+ "conf": 0.3,
+ "iou": 0.6,
+ "classes": [
+  "pedestrian",
+  "person",
+  "car",
+  "bus",
+  "truck"
+ ]
+}
