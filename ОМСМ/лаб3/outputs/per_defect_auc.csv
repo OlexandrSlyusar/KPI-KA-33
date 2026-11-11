@@ -1,0 +1,7 @@
+﻿Модель,Latent dim,broken_large,broken_small,contamination
+ConvAE,32,1.0,1.0,0.892857
+ConvAE,64,1.0,1.0,0.907143
+ConvAE,128,1.0,1.0,0.909524
+Residual ConvAE,32,1.0,0.993182,0.907143
+Residual ConvAE,64,1.0,0.995455,0.919048
+Residual ConvAE,128,1.0,0.997727,0.916667

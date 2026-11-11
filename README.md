@@ -50,7 +50,7 @@
 |---|---|---|---|
 | ЛР1 | Згорткові нейронні мережі: класифікація Caltech-101 (ResNet18 vs MobileNetV2, TL vs з нуля) | Test Acc до 94.1 %, Macro-F1 0.926 | [📁 Робота](ОМСМ/лаб1) |
 | ЛР2 | Детекція об’єктів з YOLO: VisDrone, yolov8n vs yolov5s (+ yolov7-tiny), дрібні об’єкти (варіант 13) | YOLOv8n: test mAP@0.5:0.95 0.204; SAHI / imgsz 960: +4–5 п.п. на дрібних об’єктах | [📁 Робота](ОМСМ/лаб2) |
-| ЛР3 | Автоенкодери: виявлення промислових дефектів MVTec AD, ConvAE vs Residual ConvAE (варіант 13) | 🚧 У роботі — додано умову та методичку | [📁 Робота](ОМСМ/лаб3) |
+| ЛР3 | Автоенкодери: виявлення промислових дефектів MVTec AD (bottle), ConvAE vs Residual ConvAE (+ Conv VAE, Denoising AE) (варіант 13) | ConvAE: ROC-AUC 0.970, PR-AUC 0.991, F1 0.904; Denoising ConvAE: ROC-AUC 0.977 | [📁 Робота](ОМСМ/лаб3) |
 
 ---
 

@@ -1,0 +1,64 @@
+{
+  "config": {
+    "category": "bottle",
+    "img": 256,
+    "batch": 16,
+    "epochs": 400,
+    "patience": 50,
+    "lr": 0.001,
+    "lr_factor": 0.5,
+    "lr_patience": 12,
+    "min_lr": 1e-05,
+    "val_frac": 0.15,
+    "seed": 0,
+    "latents": [
+      32,
+      64,
+      128
+    ],
+    "main_latent": 128,
+    "threshold_q": 0.95,
+    "score_sigma": 4.0,
+    "score_topk": 0.01,
+    "vae_beta": 1.0,
+    "dae_sigma": 0.1,
+    "noise_levels": [
+      0.05,
+      0.1,
+      0.2
+    ],
+    "threshold_qs": [
+      0.9,
+      0.95,
+      0.99,
+      1.0
+    ],
+    "lat_reps": [
+      100,
+      20,
+      20
+    ],
+    "n_vis": 12,
+    "out": "outputs"
+  },
+  "mode": "all",
+  "device": "GPU AMD Radeon RX 9060 XT (16 ГБ) · PyTorch 2.14.0+rocm10.1.0 · ROCm/HIP 7.16.26385 · AMP",
+  "python": "3.12.10",
+  "versions": {
+    "torch": "2.14.0+rocm10.1.0",
+    "torchvision": "0.29.0a0+rocm10.1.0",
+    "numpy": "2.5.3",
+    "pandas": "3.1.0",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2",
+    "pillow": "12.3.0"
+  },
+  "split": {
+    "train": 178,
+    "val": 31,
+    "test": 83,
+    "test_defective": 63
+  },
+  "score": "mean top-1% пікселів (x - x̂)², Gaussian σ=4.0",
+  "threshold": "квантиль 0.95 score на validation"
+}

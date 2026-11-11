@@ -1,0 +1,21 @@
+{
+  "category": "bottle",
+  "img_size": 256,
+  "main_latent": 128,
+  "score_sigma": 4.0,
+  "score_topk": 0.01,
+  "models": [
+    {
+      "model": "ConvAE",
+      "latent": 128,
+      "threshold": 0.014784978702664375,
+      "weights": "weights/ConvAE_z128.pt"
+    },
+    {
+      "model": "ResConvAE",
+      "latent": 128,
+      "threshold": 0.016541142016649246,
+      "weights": "weights/ResConvAE_z128.pt"
+    }
+  ]
+}

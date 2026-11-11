@@ -1,0 +1,25 @@
+﻿image,truth,model,score,threshold,pred,correct
+broken_large/002.png,дефект,ConvAE,0.02371305786073208,0.014784978702664375,дефект,True
+broken_large/002.png,дефект,Residual ConvAE,0.024953044950962067,0.016541142016649246,дефект,True
+broken_large/015.png,дефект,ConvAE,0.058626189827919006,0.014784978702664375,дефект,True
+broken_large/015.png,дефект,Residual ConvAE,0.06104464828968048,0.016541142016649246,дефект,True
+broken_large/018.png,дефект,ConvAE,0.11421257257461548,0.014784978702664375,дефект,True
+broken_large/018.png,дефект,Residual ConvAE,0.11444149911403656,0.016541142016649246,дефект,True
+broken_small/006.png,дефект,ConvAE,0.05213727802038193,0.014784978702664375,дефект,True
+broken_small/006.png,дефект,Residual ConvAE,0.0529111847281456,0.016541142016649246,дефект,True
+broken_small/008.png,дефект,ConvAE,0.018219707533717155,0.014784978702664375,дефект,True
+broken_small/008.png,дефект,Residual ConvAE,0.018796788528561592,0.016541142016649246,дефект,True
+broken_small/017.png,дефект,ConvAE,0.1715269684791565,0.014784978702664375,дефект,True
+broken_small/017.png,дефект,Residual ConvAE,0.17901232838630676,0.016541142016649246,дефект,True
+contamination/007.png,дефект,ConvAE,0.18101954460144043,0.014784978702664375,дефект,True
+contamination/007.png,дефект,Residual ConvAE,0.18285220861434937,0.016541142016649246,дефект,True
+contamination/011.png,дефект,ConvAE,0.024677347391843796,0.014784978702664375,дефект,True
+contamination/011.png,дефект,Residual ConvAE,0.029100537300109863,0.016541142016649246,дефект,True
+contamination/012.png,дефект,ConvAE,0.026057550683617592,0.014784978702664375,дефект,True
+contamination/012.png,дефект,Residual ConvAE,0.03683929890394211,0.016541142016649246,дефект,True
+good/008.png,норма,ConvAE,0.010106557980179787,0.014784978702664375,норма,True
+good/008.png,норма,Residual ConvAE,0.009701636619865894,0.016541142016649246,норма,True
+good/009.png,норма,ConvAE,0.006610958371311426,0.014784978702664375,норма,True
+good/009.png,норма,Residual ConvAE,0.007961285300552845,0.016541142016649246,норма,True
+good/015.png,норма,ConvAE,0.008453790098428726,0.014784978702664375,норма,True
+good/015.png,норма,Residual ConvAE,0.008336527273058891,0.016541142016649246,норма,True

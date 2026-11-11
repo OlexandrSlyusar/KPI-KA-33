@@ -1,0 +1,7 @@
+numpy
+pandas
+matplotlib
+pillow
+scikit-learn
+tqdm
+umap-learn
