@@ -1,6 +1,5 @@
-# ЛР-3. Оцінювання параметрів регресійних рівнянь (відтворення процедур EViews)
-# Запуск: python lab3.py <папка ATS_lab_03_new/Data> [папка для результатів]
-import os, sys, json
+# ЛР-3. Оцінювання параметрів регресійних рівнянь (відтворення процедур EViews): обчислення частин 1-4
+import os, json
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
@@ -8,9 +7,9 @@ import matplotlib.pyplot as plt
 from ats import (ls, lag, movav, ema, ema_weights, ma_coefs, durbin_watson, describe,
                  correlogram, eviews_text)
 
-DATA = sys.argv[1] if len(sys.argv) > 1 else "../data"
-OUT = sys.argv[2] if len(sys.argv) > 2 else "../out"
-os.makedirs(OUT, exist_ok=True)
+HERE = os.path.dirname(os.path.abspath(__file__))
+DATA = os.path.join(HERE, "data")
+OUT = os.path.join(HERE, "out")
 SERIES = [("rts1", "rts1.txt"), ("rts1996", "1996rts1.txt")]
 SECTORS = ["RTScr", "RTSeu", "RTSfn", "RTSin", "RTSmm", "RTSog", "RTStl"]
 LAGS = 12
@@ -191,30 +190,15 @@ def hist_fig(name, y, fname):
     plt.close(fig)
 
 
-def fit_fig(name, y, eq, fname, label):
-    t = np.arange(1, len(y) + 1)
-    fig, a = plt.subplots(figsize=(6.6, 2.8))
-    a.plot(t, y, "k-", lw=1, label=name)
-    f = np.full(len(y), np.nan)
-    f[eq["first"] - 1:eq["last"]] = y[eq["first"] - 1:eq["last"]] - np.array(eq["resid"])
-    a.plot(t, f, color="0.5", ls="--", lw=1, label=label)
-    a.set_xlim(1, len(y)); a.set_xlabel("k"); a.set_ylabel("значення"); a.grid(alpha=0.3); a.legend(fontsize=8)
-    fig.tight_layout(); fig.savefig(os.path.join(OUT, fname), dpi=200); plt.close(fig)
-
-
-if __name__ == "__main__":
+def run_all():
+    os.makedirs(OUT, exist_ok=True)
     res = {"part1": part1(), "series": [], "w5": ema_weights(5).tolist(), "w10": ema_weights(10).tolist()}
-    print("DW(example_for_DW) = %.5f" % res["part1"]["dw"])
     for name, fn in SERIES:
         y = load(fn)
-        R = part2(name, y)
-        res["series"].append(R)
+        res["series"].append(part2(name, y))
         hist_fig(name, y, "hist_%s.png" % name)
-        print("\n%s: p=%d (%s), q=%d (%s)" % (name, R["p"], R["p_sig"], R["q"], R["q_sig"]))
-        for k, v in R["s2"].items():
-            print("  КС по y %-5s q=%d b=%s" % (k, v["q"], np.round(v["b"], 4)))
     res["part3"] = part3()
     res["part4"] = part4(res["series"][0]["p"])
     with open(os.path.join(OUT, "results.json"), "w", encoding="utf-8") as f:
         json.dump(res, f, ensure_ascii=False, indent=1, default=float)
-    print("\nрезультати збережено: %s" % os.path.join(OUT, "results.json"))
+    return res

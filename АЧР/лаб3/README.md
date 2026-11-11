@@ -119,9 +119,10 @@ R² = 0,999787, Akaike = 5,8579, DW = 1,9476
 
 ```
 лаб3/
-├── code/
-│   ├── ats.py             # відтворення процедур EViews: ls, ARMA, correl, Histogram and Stats
-│   ├── lab3.py            # частини 1–4 для варіанту 1
+├── code/                  # проєкт Visual Studio (ATS_Lab3.sln, стартовий файл main.py)
+│   ├── main.py            # меню: перевірка, частини 1–4, таблиці 2/2а/3, вікна моделей і висновки
+│   ├── lab3.py            # обчислення частин 1–4
+│   ├── ats.py             # відтворення процедур EViews: ls, ar/ma з бекастингом, correl, Histogram and Stats
 │   ├── verify_manual.py   # перевірка на контрольних прикладах методички
 │   └── eviews/            # програми EViews (*.prg)
 └── protocol/              # протокол лабораторної роботи (.docx, .pdf)
@@ -129,12 +130,16 @@ R² = 0,999787, Akaike = 5,8579, DW = 1,9476
 
 ## Запуск
 
+Скопіювати вміст `ATS_lab_03_new/Data` і файли `example_*.txt` у `code/data/`, відкрити `code/ATS_Lab3.sln` у Visual Studio 2022 (Python development), встановити `requirements.txt` і натиснути F5. Або з терміналу:
+
 ```bash
 cd code
 pip install -r requirements.txt
-python lab3.py <ATS_lab_03_new/Data> out      # результати у out/results.json
-python verify_manual.py <ATS_lab_03_new>      # 62 перевірки, розбіжностей: 0
+python main.py        # меню
+python main.py A      # усе підряд
 ```
+
+Програми EViews:
 
 ```
 run lab3_dw e

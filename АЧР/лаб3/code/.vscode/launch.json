@@ -1,0 +1,7 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {"name": "ЛР-3: меню", "type": "debugpy", "request": "launch", "program": "${workspaceFolder}/main.py", "cwd": "${workspaceFolder}", "console": "integratedTerminal"},
+    {"name": "ЛР-3: усе підряд", "type": "debugpy", "request": "launch", "program": "${workspaceFolder}/main.py", "args": ["A"], "cwd": "${workspaceFolder}", "console": "integratedTerminal"}
+  ]
+}

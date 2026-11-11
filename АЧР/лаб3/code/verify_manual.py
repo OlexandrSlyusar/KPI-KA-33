@@ -3,7 +3,7 @@ import os, sys
 import numpy as np
 from ats import ls, lag, movav, correlogram, describe, durbin_watson, eviews_text
 
-D = sys.argv[1] if len(sys.argv) > 1 else "../data"
+D = sys.argv[1] if __name__ == "__main__" and len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 # D - папка ATS_lab_03_new з файлами example_*.txt
 rd = lambda f: np.loadtxt(os.path.join(D, f))
 rows = []
