@@ -1,0 +1,9 @@
+numpy
+pandas
+matplotlib
+tqdm
+transformers
+datasets
+rouge-score
+sentencepiece
+safetensors

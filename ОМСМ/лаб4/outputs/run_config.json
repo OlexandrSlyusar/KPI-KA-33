@@ -1,0 +1,77 @@
+{
+  "config": {
+    "dataset": "abisee/cnn_dailymail",
+    "version": "3.0.0",
+    "train_n": 20000,
+    "val_n": 1000,
+    "val_gen_n": 300,
+    "test_n": 2000,
+    "bonus_n": 500,
+    "max_source": 512,
+    "max_target": 128,
+    "epochs": 3,
+    "batch": 16,
+    "eval_batch": 32,
+    "lrs": [
+      [
+        "bart",
+        5e-05
+      ],
+      [
+        "t5",
+        0.0003
+      ]
+    ],
+    "same_lr": 5e-05,
+    "weight_decay": 0.01,
+    "warmup": 0.05,
+    "clip": 1.0,
+    "seed": 0,
+    "beams": 4,
+    "min_new": 56,
+    "max_new": 142,
+    "length_penalty": 2.0,
+    "no_repeat": 3,
+    "boot": 1000,
+    "lat_gpu": 10,
+    "lat_cpu": 3,
+    "n_human": 5,
+    "log_every": 25,
+    "ckpt_minutes": 5.0,
+    "out": "outputs"
+  },
+  "mode": "all",
+  "device": "GPU AMD Radeon RX 9060 XT (16 ГБ) · PyTorch 2.14.0+rocm10.1.0 · ROCm/HIP 7.16.26385 · bf16 AMP",
+  "python": "3.12.10",
+  "versions": {
+    "torch": "2.14.0+rocm10.1.0",
+    "transformers": "5.22.2",
+    "datasets": "5.2.0",
+    "tokenizers": "0.23.3",
+    "rouge-score": "0.1.2",
+    "numpy": "2.5.3",
+    "pandas": "3.1.0"
+  },
+  "models": {
+    "bart": "facebook/bart-base",
+    "t5": "google-t5/t5-small"
+  },
+  "split": {
+    "train": 20000,
+    "val": 1000,
+    "test": 2000,
+    "full": {
+      "train": 287113,
+      "validation": 13368,
+      "test": 11490
+    }
+  },
+  "generation": {
+    "num_beams": 4,
+    "min_new_tokens": 56,
+    "max_new_tokens": 142,
+    "length_penalty": 2.0,
+    "no_repeat_ngram_size": 3,
+    "early_stopping": true
+  }
+}

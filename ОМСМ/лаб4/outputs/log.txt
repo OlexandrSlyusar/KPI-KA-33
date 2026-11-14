@@ -1,0 +1,175 @@
+
+==== 2026-11-13 15:17 · режим all · GPU AMD Radeon RX 9060 XT (16 ГБ) · PyTorch 2.14.0+rocm10.1.0 · ROCm/HIP 7.16.26385 · bf16 AMP ====
+
+━━ Дані ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  • abisee/cnn_dailymail 3.0.0: повний датасет train 287113 / validation 13368 / test 11490
+  • підвибірки (seed = 0): train 20000 | validation 1000 | test 2000
+
+━━ Навчання основних моделей: facebook/bart-base vs t5-small ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Статистика підвибірок
+  ┌─────────┬────────┬─────────────────────────┬────────────────┬──────────────────┬─────────────────────────┬────────────────────────┐
+  │ Вибірка │ Статей │ Слів у статті (медіана) │ Слів у summary │ Речень у summary │ > 512 ток. BART-base, % │ > 512 ток. T5-small, % │
+  ├─────────┼────────┼─────────────────────────┼────────────────┼──────────────────┼─────────────────────────┼────────────────────────┤
+  │ train   │  20000 │                   636.0 │           49.3 │              3.8 │                    79.1 │                   84.8 │
+  │ val     │   1000 │                   619.5 │           55.4 │              4.1 │                    76.6 │                   83.8 │
+  │ test    │   2000 │                   616.0 │           52.7 │              3.9 │                    75.8 │                   82.8 │
+  └─────────┴────────┴─────────────────────────┴────────────────┴──────────────────┴─────────────────────────┴────────────────────────┘
+  • BART-base (facebook/bart-base): 139.4 M параметрів · lr 5e-05 · 1250 кроків на епоху · bf16 AMP
+  ✓ BART-base · епоха 1: train loss 2.322 · val loss 1.860 · val ROUGE-1/2/L (greedy, 300) 40.5/17.8/26.9 · 483 с (41.4 зразків/с) ★
+  ✓ BART-base · епоха 2: train loss 1.978 · val loss 1.822 · val ROUGE-1/2/L (greedy, 300) 41.1/18.1/26.9 · 502 с (39.8 зразків/с) ★
+
+==== 2026-11-13 19:40 · режим all · GPU AMD Radeon RX 9060 XT (16 ГБ) · PyTorch 2.14.0+rocm10.1.0 · ROCm/HIP 7.16.26385 · bf16 AMP ====
+  ✓ продовжую перерваний запуск: моделі ще не навчено
+
+━━ Дані ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  • abisee/cnn_dailymail 3.0.0: повний датасет train 287113 / validation 13368 / test 11490
+  • підвибірки (seed = 0): train 20000 | validation 1000 | test 2000
+
+━━ Навчання основних моделей: facebook/bart-base vs t5-small ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Статистика підвибірок
+  ┌─────────┬────────┬─────────────────────────┬────────────────┬──────────────────┬─────────────────────────┬────────────────────────┐
+  │ Вибірка │ Статей │ Слів у статті (медіана) │ Слів у summary │ Речень у summary │ > 512 ток. BART-base, % │ > 512 ток. T5-small, % │
+  ├─────────┼────────┼─────────────────────────┼────────────────┼──────────────────┼─────────────────────────┼────────────────────────┤
+  │ train   │  20000 │                   636.0 │           49.3 │              3.8 │                    79.1 │                   84.8 │
+  │ val     │   1000 │                   619.5 │           55.4 │              4.1 │                    76.6 │                   83.8 │
+  │ test    │   2000 │                   616.0 │           52.7 │              3.9 │                    75.8 │                   82.8 │
+  └─────────┴────────┴─────────────────────────┴────────────────┴──────────────────┴─────────────────────────┴────────────────────────┘
+  • BART-base (facebook/bart-base): 139.4 M параметрів · lr 5e-05 · 1250 кроків на епоху · bf16 AMP
+  • Esc або Q - зупинити зі збереженням прогресу; продовжити - режим 1
+  ! зупинено (BART-base: епоха 1, крок 764/1250) - прогрес збережено, режим 1 продовжить з цього місця
+
+==== 2026-11-13 19:49 · режим all · GPU AMD Radeon RX 9060 XT (16 ГБ) · PyTorch 2.14.0+rocm10.1.0 · ROCm/HIP 7.16.26385 · bf16 AMP ====
+  ✓ продовжую перерваний запуск: моделі ще не навчено
+
+━━ Дані ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  • abisee/cnn_dailymail 3.0.0: повний датасет train 287113 / validation 13368 / test 11490
+  • підвибірки (seed = 0): train 20000 | validation 1000 | test 2000
+
+━━ Навчання основних моделей: facebook/bart-base vs t5-small ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Статистика підвибірок
+  ┌─────────┬────────┬─────────────────────────┬────────────────┬──────────────────┬─────────────────────────┬────────────────────────┐
+  │ Вибірка │ Статей │ Слів у статті (медіана) │ Слів у summary │ Речень у summary │ > 512 ток. BART-base, % │ > 512 ток. T5-small, % │
+  ├─────────┼────────┼─────────────────────────┼────────────────┼──────────────────┼─────────────────────────┼────────────────────────┤
+  │ train   │  20000 │                   636.0 │           49.3 │              3.8 │                    79.1 │                   84.8 │
+  │ val     │   1000 │                   619.5 │           55.4 │              4.1 │                    76.6 │                   83.8 │
+  │ test    │   2000 │                   616.0 │           52.7 │              3.9 │                    75.8 │                   82.8 │
+  └─────────┴────────┴─────────────────────────┴────────────────┴──────────────────┴─────────────────────────┴────────────────────────┘
+  • BART-base (facebook/bart-base): 139.4 M параметрів · lr 5e-05 · 1250 кроків на епоху · bf16 AMP
+  • Esc або Q - зупинити зі збереженням прогресу; продовжити - режим 1
+  ✓ BART-base: продовжую перерваний запуск з епохи 1/3, крок 764/1250
+  ✓ BART-base · епоха 1: train loss 2.322 · val loss 1.860 · val ROUGE-1/2/L (greedy, 300) 40.6/18.0/27.1 · 537 с (37.2 зразків/с) ★
+  ✓ BART-base · епоха 2: train loss 1.979 · val loss 1.822 · val ROUGE-1/2/L (greedy, 300) 40.9/17.9/26.9 · 543 с (36.8 зразків/с) ★
+  ✓ BART-base · епоха 3: train loss 1.820 · val loss 1.820 · val ROUGE-1/2/L (greedy, 300) 40.9/17.7/26.7 · 519 с (38.5 зразків/с) ★
+  ✓ facebook/bart-base: ROUGE-1/2/L/Lsum 41.46 / 18.91 / 28.07 / 38.34 · 70 слів · 3.5 статей/с · ваги 532 МБ
+  • T5-small (google-t5/t5-small): 60.5 M параметрів · lr 0.0003 · 1250 кроків на епоху · bf16 AMP
+  • Esc або Q - зупинити зі збереженням прогресу; продовжити - режим 1
+  ✓ T5-small · епоха 1: train loss 2.091 · val loss 1.838 · val ROUGE-1/2/L (greedy, 300) 40.9/19.0/28.7 · 376 с (53.2 зразків/с) ★
+  ✓ T5-small · епоха 2: train loss 1.976 · val loss 1.838 · val ROUGE-1/2/L (greedy, 300) 40.5/18.7/28.4 · 373 с (53.6 зразків/с) ★
+  ✓ T5-small · епоха 3: train loss 1.915 · val loss 1.835 · val ROUGE-1/2/L (greedy, 300) 40.9/18.6/28.5 · 374 с (53.5 зразків/с) ★
+  ✓ t5-small: ROUGE-1/2/L/Lsum 41.66 / 19.23 / 28.74 / 38.57 · 58 слів · 3.4 статей/с · ваги 231 МБ
+
+  Порівняння моделей (test, 2000 статей; latency - batch 1, beam 4)
+  ┌────────────────────┬───────────────┬─────────────────────┬───────────────┬─────────┬─────────┬─────────┬────────────┬─────────────────┬─────────────────┬─────────────────┐
+  │ Модель             │ Параметри (М) │ Макс. довжина входу │ Час епохи (с) │ ROUGE-1 │ ROUGE-2 │ ROUGE-L │ ROUGE-Lsum │ Розмір ваг (МБ) │ Latency GPU (с) │ Latency CPU (с) │
+  ├────────────────────┼───────────────┼─────────────────────┼───────────────┼─────────┼─────────┼─────────┼────────────┼─────────────────┼─────────────────┼─────────────────┤
+  │ facebook/bart-base │        139.42 │                 512 │        536.97 │   41.46 │   18.91 │   28.07 │      38.34 │          532.07 │            1.58 │           29.11 │
+  │ t5-small           │         60.51 │                 512 │        374.15 │   41.66 │   19.23 │   28.74 │      38.57 │          230.83 │            1.42 │           16.88 │
+  └────────────────────┴───────────────┴─────────────────────┴───────────────┴─────────┴─────────┴─────────┴────────────┴─────────────────┴─────────────────┴─────────────────┘
+
+  ROUGE з базовою лінією Lead-3
+  ┌──────────────────────────┬─────────┬─────────┬─────────┬────────────┬───────┬─────────────────┐
+  │ Модель                   │ ROUGE-1 │ ROUGE-2 │ ROUGE-L │ ROUGE-Lsum │ Слів  │ Нові біграми, % │
+  ├──────────────────────────┼─────────┼─────────┼─────────┼────────────┼───────┼─────────────────┤
+  │ facebook/bart-base       │   41.46 │   18.91 │   28.07 │      38.34 │ 70.24 │            7.20 │
+  │ t5-small                 │   41.66 │   19.23 │   28.74 │      38.57 │ 58.17 │            9.52 │
+  │ Lead-3 (перші 3 речення) │   39.97 │   17.51 │   24.93 │      36.26 │ 79.39 │            0.00 │
+  └──────────────────────────┴─────────┴─────────┴─────────┴────────────┴───────┴─────────────────┘
+  • ROUGE-1: BART − T5 = -0.20 (95 % CI -0.58…+0.21, p = 0.328)
+  • ROUGE-2: BART − T5 = -0.32 (95 % CI -0.75…+0.07, p = 0.112)
+  • ROUGE-L: BART − T5 = -0.67 (95 % CI -1.05…-0.28, p = 0.004)
+  • ROUGE-Lsum: BART − T5 = -0.23 (95 % CI -0.63…+0.18, p = 0.250)
+  ✓ 5 статей для оцінки людським оком: outputs\human_eval.md
+  ✓ рисунки та таблиці збережено
+
+━━ Бонус: zero-shot, стратегії декодування, однаковий lr, довжина статей ━━━━━━━━━━━━━━━━━
+
+  Zero-shot vs fine-tuning (test, 500 статей)
+  ┌────────────────────┬─────────────────────────────┬─────────┬─────────┬─────────┬────────────┬────────┬─────────────────┐
+  │ Модель             │ Варіант                     │ ROUGE-1 │ ROUGE-2 │ ROUGE-L │ ROUGE-Lsum │ Слів   │ Нові біграми, % │
+  ├────────────────────┼─────────────────────────────┼─────────┼─────────┼─────────┼────────────┼────────┼─────────────────┤
+  │ facebook/bart-base │ без fine-tuning (zero-shot) │   37.57 │   17.03 │   23.63 │      34.58 │ 114.41 │            4.07 │
+  │ facebook/bart-base │ після fine-tuning           │   41.37 │   18.55 │   27.84 │      38.23 │  69.52 │            7.24 │
+  │ t5-small           │ без fine-tuning (zero-shot) │   38.48 │   16.63 │   26.35 │      35.64 │  52.02 │           11.30 │
+  │ t5-small           │ після fine-tuning           │   41.30 │   18.96 │   28.64 │      38.26 │  57.58 │            9.51 │
+  └────────────────────┴─────────────────────────────┴─────────┴─────────┴─────────┴────────────┴────────┴─────────────────┘
+
+  Стратегії декодування (test, 500 статей)
+  ┌────────────────────┬─────────────────────────────────────────────────┬─────────┬─────────┬─────────┬────────────┬───────┬────────────────────┬─────────────────┬───────────┐
+  │ Модель             │ Декодування                                     │ ROUGE-1 │ ROUGE-2 │ ROUGE-L │ ROUGE-Lsum │ Слів  │ Повтори триграм, % │ Нові біграми, % │ мс/статтю │
+  ├────────────────────┼─────────────────────────────────────────────────┼─────────┼─────────┼─────────┼────────────┼───────┼────────────────────┼─────────────────┼───────────┤
+  │ facebook/bart-base │ greedy                                          │   39.06 │   17.30 │   26.87 │      36.57 │ 73.48 │               6.93 │           14.82 │     94.72 │
+  │ facebook/bart-base │ beam 4                                          │   40.65 │   18.64 │   28.10 │      37.64 │ 68.43 │               3.73 │            6.34 │    262.09 │
+  │ facebook/bart-base │ beam 4 + no-repeat 3                            │   41.58 │   19.04 │   28.58 │      38.40 │ 61.06 │               0.04 │            6.91 │    269.03 │
+  │ facebook/bart-base │ beam 4 + no-repeat 3 + lp 2 + min 56 (основний) │   41.42 │   18.66 │   27.95 │      38.27 │ 69.55 │               0.05 │            7.26 │    276.09 │
+  │ t5-small           │ greedy                                          │   40.85 │   18.72 │   28.99 │      38.13 │ 49.20 │               1.67 │           14.62 │     89.19 │
+  │ t5-small           │ beam 4                                          │   41.54 │   19.46 │   29.14 │      38.52 │ 52.96 │               1.24 │            8.43 │    187.56 │
+  │ t5-small           │ beam 4 + no-repeat 3                            │   41.10 │   19.02 │   28.76 │      38.09 │ 50.65 │               0.03 │            9.38 │    176.05 │
+  │ t5-small           │ beam 4 + no-repeat 3 + lp 2 + min 56 (основний) │   41.30 │   18.96 │   28.63 │      38.26 │ 57.69 │               0.03 │            9.49 │    176.33 │
+  └────────────────────┴─────────────────────────────────────────────────┴─────────┴─────────┴─────────┴────────────┴───────┴────────────────────┴─────────────────┴───────────┘
+
+  ROUGE-L залежно від довжини статті (test)
+  ┌───────────────────────────────┬────────┬────────────────────────────┬──────────────────┬────────────────┐
+  │ Квартиль довжини статті       │ Статей │ ROUGE-L facebook/bart-base │ ROUGE-L t5-small │ ROUGE-L Lead-3 │
+  ├───────────────────────────────┼────────┼────────────────────────────┼──────────────────┼────────────────┤
+  │ Q1: 72-420 слів               │    500 │                      30.98 │            32.36 │          27.75 │
+  │ Q2: 421-616 слів              │    501 │                      28.49 │            29.24 │          25.76 │
+  │ Q3: 617-888 слів              │    500 │                      26.62 │            27.00 │          23.39 │
+  │ Q4: 889-1936 слів             │    499 │                      26.18 │            26.36 │          22.82 │
+  │ ≤ 512 токенів (без обрізання) │    483 │                      31.17 │            32.43 │          28.01 │
+  │ > 512 токенів (обрізано)      │   1517 │                      27.08 │            27.57 │          23.95 │
+  └───────────────────────────────┴────────┴────────────────────────────┴──────────────────┴────────────────┘
+  • T5-small (google-t5/t5-small): 60.5 M параметрів · lr 5e-05 · 1250 кроків на епоху · bf16 AMP
+  • Esc або Q - зупинити зі збереженням прогресу; продовжити - режим 1
+  ✓ T5-small · епоха 1: train loss 2.111 · val loss 1.846 · val ROUGE-1/2/L (greedy, 300) 40.9/18.9/28.6 · 402 с (49.8 зразків/с) ★
+  ✓ T5-small · епоха 2: train loss 2.025 · val loss 1.838 · val ROUGE-1/2/L (greedy, 300) 41.1/18.8/28.3 · 445 с (45.0 зразків/с) ★
+  ✓ T5-small · епоха 3: train loss 2.007 · val loss 1.835 · val ROUGE-1/2/L (greedy, 300) 41.0/18.9/28.6 · 397 с (50.4 зразків/с) ★
+
+  Однаковий learning rate (t5-small з lr = 5e-05, як у BART)
+  ┌────────────────────┬────────┬─────────┬─────────┬─────────┬────────────┬──────────┬────────┐
+  │ Модель             │ lr     │ ROUGE-1 │ ROUGE-2 │ ROUGE-L │ ROUGE-Lsum │ Val loss │ Слів   │
+  ├────────────────────┼────────┼─────────┼─────────┼─────────┼────────────┼──────────┼────────┤
+  │ facebook/bart-base │  5e-05 │  41.462 │  18.914 │  28.070 │     38.340 │    1.820 │ 70.239 │
+  │ t5-small           │ 0.0003 │  41.658 │  19.230 │  28.741 │     38.571 │    1.835 │ 58.175 │
+  │ t5-small           │  5e-05 │  41.667 │  19.192 │  28.851 │     38.611 │    1.835 │ 57.778 │
+  └────────────────────┴────────┴─────────┴─────────┴─────────┴────────────┴──────────┴────────┘
+  ✓ бонусні експерименти завершено
+
+━━ Інференс збережених моделей на власних прикладах ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ facebook/bart-base: 5 текстів за 3.1 с
+  ✓ t5-small: 5 текстів за 1.9 с
+
+  1. Лабораторна робота (EN)
+  facebook/bart-base  Students of the Institute for Applied System Analysis at Igor Sikorsky Kyiv Polytechnic Institute have compared two transformer models that write short summaries of news articles . The students also checked the summaries by hand and noticed that both models mostly copy whole sentences from the beginning of the text . They plan to repeat the experiment with Ukrainian news next semester .
+  t5-small            Students of the Institute for Applied System Analysis at Igor Sikorsky Kyiv Polytechnic Institute fine-tuned BART and T5 on twenty thousand stories. Each model read the first five hundred tokens of an article and learned to produce three or four sentences that describe the main events. The larger BART model needed more than twice as much time per epoch.
+
+  2. Погода / повінь (EN, вигадані назви)
+  facebook/bart-base  Heavy rain caused the river Silverbrook to burst its banks on Tuesday . More than 300 residents were moved to a school gymnasium and two hotels overnight . A 70-year-old man was treated for hypothermia after spending several hours on the roof of his car .
+  t5-small            More than 300 residents were moved to a school gymnasium and two hotels overnight. No one was seriously injured, but a 70-year-old man was treated for hypothermia after spending several hours on his car roof. Forecasters warn another 40 millimetres of rain could fall on Thursday.
+
+  3. Спорт (EN, вигадані клуби)
+  facebook/bart-base  Northbridge Rovers come from behind to beat Eastfield United 3-1 . Eastfield have now lost three matches in a row . Northbridge manager Paul Grant praised his young players and said the team still had a lot of hard work ahead . The home crowd of 24,000 were delighted with the result .
+  t5-small            Northbridge Rovers beat Eastfield United 3-1 on Saturday. Tom Walsh equalised before half-time through a long-range shot by Adam Kerr. Two goals in the last fifteen minutes from substitute Marco Silva sealed the victory and sent home crowd of 24,000 into celebration.
+
+  4. Технології (EN, вигадана компанія)
+  facebook/bart-base  Voltera plant will process up to 10,000 tonnes of batteries a year and employ about 250 people . Car makers face new rules that require a growing share of recycled metals in batteries sold from 2030 . Environmental groups welcomed the project but said more collection points were needed, because many small batteries from phones and scooters still end up in household waste .
+  t5-small            Voltera will process up to 10,000 tonnes of batteries a year and employ 250 people. Car makers face new rules that require a growing share of recycled metals in batteries sold from 2030. Environmental groups welcomed the project but said more collection points were needed because small batteries from phones and scooters still end up in household waste.
+
+  5. Українською (поза мовою навчання)
+  facebook/bart-base  У Києві студенти КПІ ім. Ігоря Сікорського представили систему, яка автоматично складає короткий �міст новинних сстратей.
+  t5-small            ор корскоо редставили систему. ка автоматино склада коротки мере на дестка тис анломовни новин.
+  ✓ outputs\inference_own.md, outputs\inference_own.csv
+
+━━ Готово за 117.2 хв · результати: outputs ━━━

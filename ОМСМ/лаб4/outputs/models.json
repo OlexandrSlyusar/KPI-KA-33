@@ -1,0 +1,39 @@
+{
+  "models": [
+    {
+      "key": "bart",
+      "model": "facebook/bart-base",
+      "hf": "facebook/bart-base",
+      "path": "weights/bart",
+      "prefix": "",
+      "best_epoch": 3,
+      "val_loss": 1.8199119308632818,
+      "epoch_time": 536.9737994999996,
+      "samples_per_s": 37.24576509807908,
+      "train_time": 1430.2893215000004,
+      "lr": 5e-05
+    },
+    {
+      "key": "t5",
+      "model": "t5-small",
+      "hf": "google-t5/t5-small",
+      "path": "weights/t5",
+      "prefix": "summarize: ",
+      "best_epoch": 3,
+      "val_loss": 1.8352014343666325,
+      "epoch_time": 374.1498122999983,
+      "samples_per_s": 53.45452367610366,
+      "train_time": 1229.7167846000011,
+      "lr": 0.0003
+    }
+  ],
+  "generation": {
+    "num_beams": 4,
+    "min_new_tokens": 56,
+    "max_new_tokens": 142,
+    "length_penalty": 2.0,
+    "no_repeat_ngram_size": 3,
+    "early_stopping": true
+  },
+  "max_source": 512
+}
