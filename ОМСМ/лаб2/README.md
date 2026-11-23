@@ -81,8 +81,8 @@
 
 ```
 лаб2/
-├── code/        # ОМСМ_лаба2.py — увесь конвеєр, yolo_common.py — спільний інференс/NMS/SAHI,
-│                # run_inference.py — інференс, setup_env.bat / run_lab.bat — середовище та запуск
+├── code/        # ОМСМ_лаба2.py — уся програма (дані, детектор, навчання, оцінка, SAHI, бонуси, інференс),
+│                # ОМСМ лаба2.pyproj — проєкт Visual Studio, requirements.txt
 ├── outputs/     # таблиці (CSV), графіки, EigenCAM, GIF із детекціями, висновки
 ├── my_images/   # власні зображення (джерела й ліцензії — SOURCES.md)
 └── protocol/    # протокол лабораторної роботи (.docx)
@@ -90,13 +90,26 @@
 
 ## Запуск
 
+**Середовище (AMD, ROCm):**
+
 ```bat
-cd code
-setup_env.bat    :: Python 3.12 + PyTorch для ROCm (AMD) + залежності
-run_lab.bat      :: дані → навчання → оцінка → бонуси → інференс (або F5 у Visual Studio)
+python -m venv %USERPROFILE%\omsm_lab2\venv
+%USERPROFILE%\omsm_lab2\venv\Scripts\python -m pip install --index-url https://stable.repo.amd.com/rocm/whl-next/ "torch[device-gfx1200]==2.14.0+rocm10.1.0" "torchvision[device-gfx1200]==0.29.0a0+rocm10.1.0"
+%USERPROFILE%\omsm_lab2\venv\Scripts\python -m pip install -r code/requirements.txt
 ```
 
-Для NVIDIA/CPU встановіть PyTorch відповідної збірки і виконайте `pip install -r requirements.txt`, `python ОМСМ_лаба2.py`.
+Для NVIDIA/CPU встановіть PyTorch відповідної збірки, далі `pip install -r requirements.txt`.
+
+**Visual Studio:** відкрити `code/ОМСМ лаба2.pyproj` → *Start* (F5).
+
+**Командний рядок:** `python ОМСМ_лаба2.py [all | smoke | infer | check]`
+
+| Режим | Що робить |
+|---|---|
+| `all` (за замовчуванням) | дані → навчання → оцінка → дрібні об’єкти / SAHI → бонуси → інференс |
+| `smoke` | швидка перевірка всього конвеєра (2 епохи, малі сітки) |
+| `infer` | інференс збереженої найкращої моделі на `my_images/` і `my_video/` |
+| `check` | перевірка GPU (PyTorch, ROCm, AMP, NMS) |
 
 > Датасет VisDrone, офіційні репозиторії YOLOv5/YOLOv7 та ваги завантажуються автоматично; ваги моделей (`*.pt`) і датасет не додано до репозиторію через великий розмір.
 

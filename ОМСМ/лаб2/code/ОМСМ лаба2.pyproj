@@ -23,19 +23,10 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="run_inference.py" />
     <Compile Include="ОМСМ_лаба2.py" />
-    <Compile Include="yolo_common.py" />
-    <Compile Include="lab2_main.py" />
-    <Compile Include="check_gpu.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
-    <Content Include="README.md" />
-    <Content Include="setup_env.bat" />
-    <Content Include="run_smoke.bat" />
-    <Content Include="run_lab.bat" />
-    <Content Include="update_eval.bat" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="C:\Users\aasly\omsm_lab2\venv\">
