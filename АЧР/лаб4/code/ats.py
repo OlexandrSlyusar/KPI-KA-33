@@ -1,4 +1,4 @@
-# ЛР-3. Аналіз часових рядів. Відтворення обчислень EViews (LS, ARMA, корелограма, описова статистика)
+# Аналіз часових рядів. Відтворення обчислень EViews (LS, AR/MA з бекастингом, fit/forecast, корелограма, описова статистика)
 import numpy as np
 from scipy import stats, optimize, signal
 
